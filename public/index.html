@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LINE LIFF login example</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  </head>
+  <body>
+    <div>
+      accessToken:
+      <pre id="accessToken"></pre>
+      <br>
+      idToken:
+      <pre id="idToken"></pre>
+      <br>
+      decodedIDToken:
+      <pre id="decodedIDToken"></pre>
+      <br>
+      profile:
+      <pre id="profile"></pre>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // initialize liff
+        initializeLiff('1654625728-8WR7OrP4')
+      });
+      function initializeLiff(myLiffId) {
+        liff.init({
+          liffId: myLiffId
+        }).then(() => {
+          // start to use LIFF's api
+          initializeApp();
+        })
+        .catch((err) => {
+          document.getElementById("liffAppContent").classList.add('hidden');
+          document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+        });
+      }
+      async function initializeApp() {
+        // check if user logged in
+        // if user open this link inside LINE Browser, user will be automatically logged in
+        if (!liff.isLoggedIn()) { // if not logged in
+          // login
+          debugger
+          return liff.login({
+            redirectUri: window.location.origin
+          })
+        }
+        // use already logged in
+        // get user profile from LINE
+        const accessToken = liff.getAccessToken();
+        const idToken = liff.getIDToken();
+        const decodedIDToken = liff.getDecodedIDToken();
+        const profile = await liff.getProfile()
+
+        document.getElementById('accessToken').textContent = accessToken
+        document.getElementById('idToken').textContent = idToken
+        document.getElementById('decodedIDToken').textContent = JSON.stringify(decodedIDToken, undefined, 2)
+        document.getElementById('profile').textContent = JSON.stringify(profile, undefined, 2)
+      }
+    </script>
+  </body>
+</html>
